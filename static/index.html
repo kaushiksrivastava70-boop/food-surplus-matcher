@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Food Surplus Matcher</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="brand">Food Surplus Matcher <span id="live" class="live" title="Live updates"></span></div>
+  <div id="stats" class="stats"></div>
+  <button id="langBtn" class="ghost">हिन्दी</button><div id="userbar"></div>
+</header>
+<div class="app">
+  <aside>
+    <section id="auth" class="panel hidden">
+      <h2>Rescue food before it spoils</h2>
+      <p class="muted">Donors list surplus. Volunteers get matched to the food they can reach in time.</p>
+      <div class="seg" id="roleSeg"><button data-role="donor" class="on">I have food</button><button data-role="volunteer">I can pick up</button></div>
+      <input id="name" placeholder="Name or organisation" autocomplete="name">
+      <input id="email" type="email" placeholder="Email" autocomplete="email">
+      <input id="password" type="password" placeholder="Password (6+ characters)" autocomplete="current-password">
+      <div class="row"><button id="registerBtn" class="primary">Create account</button><button id="loginBtn" class="ghost">Log in</button></div>
+    </section>
+    <nav id="tabs" class="tabs hidden"></nav>
+    <section id="tab-nearby" class="tabpane">
+      <div class="filters">
+        <div class="chips" id="dietChips"><button data-v="" class="on">All</button><button data-v="veg">Veg</button><button data-v="non-veg">Non-veg</button><button data-v="packaged">Packaged</button></div>
+        <div class="chips" id="whenChips"><button data-w="" class="on">Available now</button><button data-w="upcoming">Upcoming events</button></div>
+        <label class="range">Within <b id="radLbl">10</b> km <input id="radius" type="range" min="1" max="30" value="10"></label>
+        <select id="sort"><option value="match">Best match</option><option value="urgency">Expiring soonest</option><option value="distance">Nearest</option></select>
+      </div>
+      <div id="listings"></div>
+    </section>
+    <section id="tab-post" class="panel tabpane hidden">
+      <h2>Post surplus food</h2>
+      <select id="preset"><option value="">What kind of food? (sets a safe time)</option><option value="4|veg">Rice or biryani · safe 4h</option><option value="4|veg">Dal, curry, sabzi · safe 4h</option><option value="6|veg">Roti, paratha · safe 6h</option><option value="8|veg">Sweets, mithai · safe 8h</option><option value="10|packaged">Bakery, snacks · safe 10h</option><option value="12|packaged">Sealed packaged · safe 12h</option></select>
+      <p class="muted">Safe time counts from now. If the food has been sitting, shorten it.</p>
+      <input id="title" placeholder="What is it? e.g. Veg biryani">
+      <div class="two"><select id="diet"><option value="veg">Veg</option><option value="non-veg">Non-veg</option><option value="packaged">Packaged</option></select>
+      <input id="quantity" type="number" min="1" placeholder="Meals"></div>
+      <div class="search"><input id="address" placeholder="Pickup address"><button id="findBtn" class="ghost">Find on map</button></div>
+      <p class="muted" id="pinHint">Search an address or tap the map to drop the pickup pin.</p>
+      <div class="chips" id="quick"><button data-h="1">Safe 1h</button><button data-h="2">2h</button><button data-h="4">4h</button><button data-h="6">6h</button></div>
+      <input id="safeUntil" type="datetime-local" aria-label="Safe until">
+      <p class="muted">Event or later pickup? Set when the food will be ready (optional).</p>
+      <input id="readyFrom" type="datetime-local" aria-label="Ready from">
+      <select id="repeat"><option value="">Doesn't repeat</option><option value="daily">Repeat daily</option><option value="weekdays">Repeat on weekdays</option><option value="weekends">Repeat on weekends</option></select>
+      <input id="photo" type="file" accept="image/*" aria-label="Food photo">
+      <label class="check"><input id="safe" type="checkbox"> The food is fresh, covered and safe to eat.</label>
+      <button id="postBtn" class="primary wide">Post listing</button>
+    </section>
+    <section id="tab-requests" class="tabpane hidden">
+      <div id="rqForm" class="panel hidden">
+        <h2>Ask for food</h2><p class="muted">Tell donors what your shelter or group needs. Search an address or tap the map to set the spot.</p>
+        <div class="two"><input id="rqMeals" type="number" min="1" placeholder="Meals needed"><select id="rqHours"><option value="2">within 2h</option><option value="4" selected>within 4h</option><option value="8">within 8h</option><option value="24">within 24h</option></select></div>
+        <div class="search"><input id="rqAddress" placeholder="Where? e.g. Aminabad shelter"><button id="findReq" class="ghost">Find on map</button></div>
+        <input id="rqNote" placeholder="Note, e.g. mostly children, veg only">
+        <button id="rqBtn" class="primary wide">Post request</button>
+      </div>
+      <div id="requests"></div>
+    </section>
+    <section id="tab-mine" class="tabpane hidden"><div id="recur"></div><div id="mine"></div></section>
+    <section id="tab-impact" class="tabpane hidden"><div id="me"></div><div id="chart"></div><div id="board"></div></section>
+    <section id="tab-admin" class="tabpane hidden"></section>
+  </aside>
+  <div id="map"></div>
+</div>
+<div id="toast" role="status"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
